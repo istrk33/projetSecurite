@@ -1,11 +1,21 @@
 #include <stdio.h>
+#include <ctype.h>
+#include <stdbool.h>
 
 int main()
 {
     printf("Bienvenu sur le module de calcul de vos impots !\n");
-    int nbEnfants;
-    printf("Enter the first value:");
-    scanf("%d", &a);
+    int childNumber;
+    bool isMarried;
+    char responseIsMarried[3];
+    double overallNetIncome;
+    printf("Êtes-vous marié ?");
+    scanf("%s", &responseIsMarried);
+    while (strcmp(tolower(responseIsMarried), "oui") != 0 || strcmp(tolower(responseIsMarried), "non") != 0)
+    {
+        printf("Êtes-vous marié ?");
+        scanf("%s", &responseIsMarried);
+    }
     return 0;
 }
 
