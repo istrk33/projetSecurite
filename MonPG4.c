@@ -1,21 +1,38 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <stdbool.h>
+#include <string.h>
+#define MAX 3
 
 int main()
 {
     printf("Bienvenu sur le module de calcul de vos impots !\n");
     int childNumber;
     bool isMarried;
-    char responseIsMarried[3];
+    char responseIsMarried[MAX];
+    char oui[]="OUI";
+    char non[]="NON";
     double overallNetIncome;
-    printf("Êtes-vous marié ?");
-    scanf("%s", &responseIsMarried);
-    while (strcmp(tolower(responseIsMarried), "oui") != 0 || strcmp(tolower(responseIsMarried), "non") != 0)
+    //compute numbers of parts
+    printf("Êtes-vous marié ?[OUI/NON]\n");
+    fgets(responseIsMarried,MAX,stdin);
+    while (strcmp(responseIsMarried, oui) != 0 || strcmp(responseIsMarried, non) != 0)
+    {
+        printf("Êtes-vous marié ?[OUI/NON]\n");
+        fgets(responseIsMarried,MAX,stdin);
+        printf("%d",strcmp(responseIsMarried, oui) != 0);
+        printf("ma rep :::::: %s\n",responseIsMarried);
+        printf("base :::::: %s\n",oui);
+    }
+    printf("Combien d'enfants avez-vous ?\n");
+    scanf("%d", &childNumber);
+    /*while (strcmp(tolower(responseIsMarried), "oui") != 0 || strcmp(tolower(responseIsMarried), "non") != 0)
     {
         printf("Êtes-vous marié ?");
         scanf("%s", &responseIsMarried);
-    }
+    }*/
+    printf("Quel est votre revenu net global ?");
+    scanf("%lf", &overallNetIncome);
     return 0;
 }
 
