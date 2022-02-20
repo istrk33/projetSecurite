@@ -7,33 +7,87 @@
 int main()
 {
     printf("Bienvenu sur le module de calcul de vos impots !\n");
-    int childNumber;
+    int childNumber = 0;
     bool isMarried;
-    char responseIsMarried[MAX];
-    char oui[]="OUI";
-    char non[]="NON";
+    bool isCorrectResponse = false;
+    char o = 'O';
+    char n = 'N';
+    char responseIsMarried;
     double overallNetIncome;
-    //compute numbers of parts
-    printf("Êtes-vous marié ?[OUI/NON]\n");
-    fgets(responseIsMarried,MAX,stdin);
-    while (strcmp(responseIsMarried, oui) != 0 || strcmp(responseIsMarried, non) != 0)
+    // compute numbers of parts
+    printf("Êtes-vous marié ?[\"O\" pour oui/\"N\" pour non]\n");
+    while (!isCorrectResponse)
     {
-        printf("Êtes-vous marié ?[OUI/NON]\n");
-        fgets(responseIsMarried,MAX,stdin);
-        printf("%d",strcmp(responseIsMarried, oui) != 0);
-        printf("ma rep :::::: %s\n",responseIsMarried);
-        printf("base :::::: %s\n",oui);
+        if (scanf(" %c", &responseIsMarried))
+        {
+            if (responseIsMarried == o)
+            {
+                isCorrectResponse = true;
+                isMarried = true;
+            }
+            else if (responseIsMarried == n)
+            {
+                isCorrectResponse = true;
+                isMarried = false;
+            }
+            else
+            {
+                printf("Réponse incorrecte, entrez les valeurs \'O\' ou \'N\'\n");
+            }
+        }
     }
-    printf("Combien d'enfants avez-vous ?\n");
-    scanf("%d", &childNumber);
-    /*while (strcmp(tolower(responseIsMarried), "oui") != 0 || strcmp(tolower(responseIsMarried), "non") != 0)
+    isCorrectResponse = false;
+    printf("Combien d'enfants avez-vous ?(Entrez une valeur entière)\n");
+    while (!isCorrectResponse)
     {
-        printf("Êtes-vous marié ?");
-        scanf("%s", &responseIsMarried);
-    }*/
+        if (scanf("%d", &childNumber))
+        {
+            if (childNumber < 0)
+            {
+                printf("Entrez une valeur au moins égale à 0 !!!\n");
+            }
+            else
+            {
+                isCorrectResponse = true;
+            }
+        }
+        else
+        {
+            getchar();
+            printf("Entrez une valeur entière !!!\n");
+        }
+    }
+    isCorrectResponse=false;
     printf("Quel est votre revenu net global ?");
-    scanf("%lf", &overallNetIncome);
+    while (!isCorrectResponse)
+    {
+        if (scanf("%lf", &overallNetIncome))
+        {
+            if (overallNetIncome < 0.0)
+            {
+                printf("Entrez une valeur au moins égale à 0.0 !!!\n");
+            }
+            else
+            {
+                isCorrectResponse = true;
+            }
+        }
+        else
+        {
+            getchar();
+            printf("Entrez un nombre avec une virgule flottante !!!\n");
+        }
+    }
+    printf("%lf\n",overallNetIncome);
     return 0;
+}
+
+int nbParts(){
+    return 0;
+}
+
+double taxes(){
+    return 0.0;
 }
 
 /*public int impots(double revenuNetGlobal, int nbParts) {
