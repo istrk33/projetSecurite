@@ -2,7 +2,6 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <string.h>
-#define MAX 3
 double nbParts(int nbChildren, bool isMarried);
 double taxes(double income,double nbparts);
 int main()
