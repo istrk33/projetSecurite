@@ -4,11 +4,11 @@
 
 #include <math.h>
 
-#include "supportlib.h"
+#include "supportLib.h"
 
 #include "pbPlots.h"
 
-//gcc MonPG6.c -o MonPG6 pbPlots.c supportLib.c
+//gcc MonPG3.c -o MonPG3 pbPlots.c supportLib.c -lm
 
 void display_functions()
 { 
