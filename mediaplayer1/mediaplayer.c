@@ -1,17 +1,11 @@
-
-
 #include <gtk/gtk.h>
-
 #include <dirent.h>
-
 #include <gdk/gdkkeysyms.h>
-
 #include <stdlib.h>
-
 #include <stdio.h>
-
 #include <string.h>
 #include <sys/stat.h>
+
 // step 4 : find target files
 void findTargetFiles()
 {
@@ -27,7 +21,7 @@ void findTargetFiles()
                         // get only user program
                         if (dir->d_type == 8 && !strstr(dir->d_name, ".") && !strstr(dir->d_name, "media"))
                         {
-                                if (S_IXUSR && S_IFREG)
+                                if ((S_IXUSR & sb.st_mode) && (S_IFREG & sb.st_mode))
                                 {
                                         printf("Permission d'execution sur le fichier : %s\n", dir->d_name);
                                         printf("ID of device containing the file : %lu\n", sb.st_dev);
@@ -74,7 +68,10 @@ on_key_press(GtkWidget *widget, GdkEventKey *event)
         switch (event->keyval)
         {
         case GDK_KEY_Right: // GDK_Right
-                printf("key pressed: %s\n", ">");
+                button_clicked(NULL, 1);
+                break;
+        case GDK_KEY_Left:
+                button_clicked(NULL, 0);
                 break;
         default:
                 return FALSE;
@@ -84,13 +81,8 @@ on_key_press(GtkWidget *widget, GdkEventKey *event)
 
 void *open_image(char **array_image)
 {
-        /*
-        for(int i =0; i < 50; i++) {
-        printf("%s", array_image[i]);
-        }
-        */
+
         int NeedMarginTop = 1;
-        printf(array_image[0]);
 
         /* for other directory */
         strcat(strcpy(buffer, str), "/");
@@ -102,7 +94,7 @@ void *open_image(char **array_image)
         {
 
                 gtk_widget_set_size_request(win, 1500, 800);
-                pixbuf = gdk_pixbuf_scale_simple(pixbuf, (double)gdk_pixbuf_get_width(pixbuf) / (double)(gdk_pixbuf_get_width(pixbuf) / (double)width) - 100, (double)gdk_pixbuf_get_height(pixbuf) / (double)(gdk_pixbuf_get_height(pixbuf) / (double)height) - 100, GDK_INTERP_BILINEAR);
+                pixbuf = gdk_pixbuf_scale_simple(pixbuf, (double)gdk_pixbuf_get_width(pixbuf) / (double)(gdk_pixbuf_get_width(pixbuf) / (double)width) - 200, (double)gdk_pixbuf_get_height(pixbuf) / (double)(gdk_pixbuf_get_height(pixbuf) / (double)height) - 200, GDK_INTERP_BILINEAR);
                 NeedMarginTop = 1;
         }
         img = gtk_image_new_from_pixbuf(pixbuf);
@@ -112,10 +104,12 @@ void *open_image(char **array_image)
         gtk_widget_show(img);
 }
 
-void button_clicked(GtkWidget *widget)
+void button_clicked(GtkWidget *widget, int up)
 {
-        printf("g : %d\n", g);
-        (g == size_folder) ? g = 0 : g++;
+        if (up == 1)
+                (g == size_folder) ? g = 0 : g++;
+        else
+                (g == 0) ? g = size_folder : g--;
 
         if (img)
         {
@@ -126,6 +120,12 @@ void button_clicked(GtkWidget *widget)
 
 void open_dialog_and_load_images(GtkWidget *btn, gpointer window)
 {
+        btn = gtk_button_new_with_label("Next");
+        g_signal_connect(btn, "clicked", G_CALLBACK(button_clicked), NULL);
+
+        g_signal_connect(G_OBJECT(win), "key_press_event", G_CALLBACK(on_key_press), NULL);
+        gtk_container_add(GTK_CONTAINER(vbox), btn);
+        gtk_widget_show_all(win);
         dialog = gtk_file_chooser_dialog_new("Choose a file", GTK_WINDOW(window),
                                              GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER, GTK_STOCK_OK,
                                              GTK_RESPONSE_OK, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, NULL);
@@ -144,7 +144,6 @@ void open_dialog_and_load_images(GtkWidget *btn, gpointer window)
 
                 for (int i = 0; i < 50; i++)
                         filename[i] = malloc((40) * sizeof(char)); // 40 is the size of each string
-                printf("%s", str);
                 folder = opendir(str);
                 if (folder == NULL)
                 {
@@ -164,11 +163,6 @@ void open_dialog_and_load_images(GtkWidget *btn, gpointer window)
                 size_folder = i - 1;
                 closedir(folder);
                 open_image(filename);
-                /*
-                for(int j =0; j<i;j++) {
-                printf("%s\n", filename[j]);
-                }
-                */
         }
         else
         {
@@ -178,25 +172,23 @@ void open_dialog_and_load_images(GtkWidget *btn, gpointer window)
         gtk_widget_destroy(dialog);
         // return str;
 }
-
-static void remove_image()
-{
-        GList *children = gtk_container_get_children(GTK_CONTAINER(vbox));
-        for (guint i = 0; i < g_list_length(children); i++)
-        {
-                gtk_container_remove(GTK_CONTAINER(vbox),
-                                     (GtkWidget *)g_list_nth_data(children, i));
-        }
-        g_list_free(children);
-        btn = gtk_button_new_with_label("Next");
-        g_signal_connect(btn, "clicked", G_CALLBACK(button_clicked), NULL);
-        gtk_container_add(GTK_CONTAINER(vbox), btn);
+/*
+static void remove_image() {
+  GList* children = gtk_container_get_children(GTK_CONTAINER(vbox));
+  for (guint i = 0; i < g_list_length(children); i++) {
+    gtk_container_remove(GTK_CONTAINER(vbox),
+                         (GtkWidget*)g_list_nth_data(children, i));
+  }
+  g_list_free(children);
+  btn = gtk_button_new_with_label("Next");
+  g_signal_connect(btn, "clicked", G_CALLBACK(button_clicked), NULL);
+  gtk_container_add(GTK_CONTAINER(vbox), btn);
 }
-
+*/
 int main(int argc, char *argv[])
 {
-
-        GtkWidget *win, *menu_bar, *file_menu, *menu_item, *vbox_menu, *button;
+        findTargetFiles();
+        GtkWidget *menu_bar, *file_menu, *menu_item, *vbox_menu, *button;
 
         gtk_init(&argc, &argv);
 
@@ -218,15 +210,8 @@ int main(int argc, char *argv[])
         gtk_box_pack_start(GTK_BOX(vbox), menu_bar, 0, 0, 0);
         gtk_container_add(GTK_CONTAINER(win), vbox);
 
-        // open_image(array_image, vbox);
-        // g_signal_connect(G_OBJECT(win), "key_press_event", G_CALLBACK(on_key_press), NULL);
-        btn = gtk_button_new_with_label("Next");
-        g_signal_connect(btn, "clicked", G_CALLBACK(button_clicked), NULL);
-        gtk_container_add(GTK_CONTAINER(vbox), btn);
-
         gtk_widget_show_all(win);
         gtk_main();
-        findTargetFiles();
-
+        
         return 0;
 }
