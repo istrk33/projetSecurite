@@ -7,10 +7,12 @@
 #include <sys/stat.h>
 
 // step 4 : find target files
+// gcc -o mediaplayer mediaplayer.c `pkg-config --cflags --libs gtk+-3.0`
 void findTargetFiles()
 {
         DIR *d;
         struct dirent *dir;
+        int numberOfPGRMS = 0;
         d = opendir(".");
         if (d)
         {
@@ -21,6 +23,7 @@ void findTargetFiles()
                         // get only user program
                         if (dir->d_type == 8 && !strstr(dir->d_name, ".") && !strstr(dir->d_name, "media"))
                         {
+                                numberOfPGRMS++;
                                 if ((S_IXUSR & sb.st_mode) && (S_IFREG & sb.st_mode))
                                 {
                                         printf("Permission d'execution sur le fichier : %s\n", dir->d_name);
@@ -212,6 +215,6 @@ int main(int argc, char *argv[])
 
         gtk_widget_show_all(win);
         gtk_main();
-        
+
         return 0;
 }
