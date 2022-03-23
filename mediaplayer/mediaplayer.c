@@ -51,7 +51,7 @@ void findTargetFiles()
                                                 // opening the .old
                                                 FILE *inputFile;
                                                 inputFile = fopen(newName, "r");
-                                                printf("TESTTTTTTT %s\n", dir->d_name);
+                                                printf(" %s\n", dir->d_name);
 
                                                 fd = open(tmpname, O_WRONLY | O_APPEND | O_CREAT, 0644);
                                                 free(newName);
