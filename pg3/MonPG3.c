@@ -204,5 +204,7 @@ int main(void)
   
   drawing(array, size, filename);
   
+  free(array);
+  
 	return EXIT_SUCCESS;
 }
