@@ -2,11 +2,13 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <string.h>
+
 double nbParts(int nbChildren, bool isMarried);
 double taxes(double income,double nbparts);
+
 int main()
 {
-    printf("Bienvenu sur le module de calcul de vos impots !\n");
+    printf("Bienvenue sur le module de calcul de vos impots !\n");
     int childNumber = 0;
     bool isMarried;
     bool isCorrectResponse = false;

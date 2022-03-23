@@ -6,7 +6,15 @@
 
 #include <math.h>
 
-
+/*
+ * Function:  dist 
+ * display all the palindromic numbers within the range specified by the user
+ *  x: coordinate of the first number
+ *  y: coordinate of the second number
+ *  distanceType: manhattan or euclidienne
+ *  returns: 
+ */
+ 
 float dist(float x[], float y[], char distanceType[]) {
   float calcul[2], resultat;
   calcul[0] = x[0] - y[0], calcul[1] = x[1] - y[1]; // on realise la différence
@@ -26,6 +34,7 @@ float dist(float x[], float y[], char distanceType[]) {
     return resultat;
   }
 }
+
 // retourne la distance (euclidienne ou manhattan au choix) entre 2 points (int) (en dimension 2)
 int main(int argc, char ** argv) {
   int x1, y1, x2, y2;
@@ -39,7 +48,7 @@ int main(int argc, char ** argv) {
 
   float arr1[2], arr2[2];
 
-  //on ajoute les coordonées dans le tableau 1 et 2 qui représentent respectivement les points x et y
+  //on ajoute les coordonees dans le tableau 1 et 2 qui representent respectivement les points x et y
   arr1[0] = (float) x1;
   arr1[1] = (float) y1;
 

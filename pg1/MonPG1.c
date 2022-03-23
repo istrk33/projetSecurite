@@ -4,9 +4,11 @@
 
 #include <string.h>
 
+#include <unistd.h>
+
 #define SIZE 50
 
-// function equivalent to strrev in windows
+// reverse the string (implemented function in windows)
 char *strrevv(char *str)
 {
       char *p1, *p2;
@@ -22,6 +24,13 @@ char *strrevv(char *str)
       return str;
 }
 
+/*
+ * Function:  find_palindromic_number 
+ * display all the palindromic numbers within the range specified by the user
+ *  borneMinimale: start of range
+ *  borneMaximale: end of range
+ */
+ 
 void find_palindromic_number(int borneMinimale, int borneMaximale)
 {
 	char tmp[SIZE], tmp2[SIZE];
@@ -36,17 +45,36 @@ void find_palindromic_number(int borneMinimale, int borneMaximale)
 	}
 }
 
-
 int main(void) {
   int intervalleMin, intervalleMax;
   printf("Début du programme pour trouver des nombres palindromes entre 2 bornes\n");
   printf("Entrez la borne minimale (incluse) : ");
+  
   fflush(stdout); // pour windows
-  scanf("%d", & intervalleMin);
+  
+  if (!scanf("%d", & intervalleMin)) {
+  	printf("Ce n'est pas un entier - le programme va se fermer\n");
+  	sleep(1);
+  	exit(0);
+  }
+  
   printf("Entrez la borne maximale (incluse) : ");
+  
   fflush(stdout); // pour windows
-  scanf("%d", & intervalleMax);
-
-	find_palindromic_number(intervalleMin, intervalleMax);
+  
+  if (!scanf("%d", & intervalleMax)) {
+  	printf("Ce n'est pas un entier - le programme va se fermer\n");
+  	sleep(1);
+  	exit(0);
+  }
+  
+  if (intervalleMin<0) {
+  	printf("Les valeurs negatives ne sont pas acceptees - le programme va se fermer\n");
+  	sleep(1);
+  	exit(0);
+	}
+	
+  find_palindromic_number(intervalleMin, intervalleMax);
+  
   return EXIT_SUCCESS;
 }
