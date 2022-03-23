@@ -1,2 +1,8 @@
 ------------------------------
 Checkpoint numero 1 : 00:01:04
+------------------------------
+Checkpoint numero 1 : 00:00:35
+------------------------------
+Checkpoint numero 1 : 00:00:02
+Checkpoint numero 2 : 00:00:05
+Checkpoint numero 3 : 00:00:07

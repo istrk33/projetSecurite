@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
             }
             printf("a : %d, b : %d\n",a,b);
         }
-        printf("Le plus grand multiple commun de %d et %d est %d.\n",c,d,a);
+        printf("Le plus petit multiple commun de %d et %d est %d.\n",c,d,a);
     }
     else
     {
