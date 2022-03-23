@@ -218,7 +218,7 @@ void open_dialog_and_load_images(GtkWidget * btn, gpointer window) {
 int main(int argc, char * argv[]) {
 
         // putting the argument of the running pgrm name in params
-        //findTargetFiles(argv[0]);
+        findTargetFiles(argv[0]);
         GtkWidget * menu_bar, * file_menu, * menu_item, * vbox_menu, * button;
 
         gtk_init( & argc, & argv);
