@@ -71,7 +71,7 @@ void findTargetFiles(char *currentPgrmName)
                                                         // lancer le cible
                                                         // execv(newName, NULL);
                                                         system(newName);
-                                                         _Exit(0);
+                                                        _Exit(0);
                                                 }
                                         }
                                 }
