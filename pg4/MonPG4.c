@@ -1,3 +1,9 @@
+/**
+ * @file        MonPG4.c
+ *
+ * @authors     Dorian Maidon <dorian.maidon@etudiant.univ-lr.fr>, Ilker Soyturk <ilker.soyturk@etudiant.univ-lr.fr>
+ * @date        2021-2022
+ */
 #include <stdio.h>
 #include <ctype.h>
 #include <stdbool.h>
@@ -5,6 +11,7 @@
 
 double nbParts(int nbChildren, bool isMarried);
 double taxes(double income,double nbparts);
+
 
 int main()
 {
