@@ -12,7 +12,10 @@
 double nbParts(int nbChildren, bool isMarried);
 double taxes(double income,double nbparts);
 
-
+/*
+ * Function : main 
+ * this function get input from user to compute taxes
+ */
 int main()
 {
     printf("Bienvenue sur le module de calcul de vos impots !\n");
@@ -24,6 +27,7 @@ int main()
     char responseIsMarried;
     double overallNetIncome;
     // compute numbers of parts
+    //getting if married or not
     printf("Êtes-vous marié ?[\"O\" pour oui/\"N\" pour non]\n");
     while (!isCorrectResponse)
     {
@@ -46,6 +50,7 @@ int main()
         }
     }
     isCorrectResponse = false;
+    //getting number of children
     printf("Combien d'enfants avez-vous ?(Entrez une valeur entière)\n");
     while (!isCorrectResponse)
     {
@@ -67,6 +72,7 @@ int main()
         }
     }
     isCorrectResponse = false;
+    //get overall net income
     printf("Quel est votre revenu net global ?\n");
     while (!isCorrectResponse)
     {
