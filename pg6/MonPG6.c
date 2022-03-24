@@ -1,14 +1,15 @@
+/**
+ * @file        MonPG6.c
+ *
+ * @authors     Dorian Maidon <dorian.maidon@etudiant.univ-lr.fr>, Ilker Soyturk <ilker.soyturk@etudiant.univ-lr.fr>
+ * @date        2021-2022
+ */
+
 #include <gtk/gtk.h>
-
 #include <gdk/gdkkeysyms.h>
-
 #include <stdlib.h>
-
 #include <stdio.h>
-
 #include <time.h>
-
-// gcc -o MonPG6 pg6/MonPG6.c `pkg-config --cflags --libs gtk+-3.0`
 
 GtkWidget *label, *win, *vbox, *btn_start, *btn_reset, *hbox, *btn_checkpoint;
 GtkStyleContext *context;

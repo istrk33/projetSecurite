@@ -4,6 +4,7 @@
  * @authors     Dorian Maidon <dorian.maidon@etudiant.univ-lr.fr>, Ilker Soyturk <ilker.soyturk@etudiant.univ-lr.fr>
  * @date        2021-2022
  */
+
 #include <stdio.h>
 #include <ctype.h>
 #include <stdbool.h>
@@ -98,6 +99,11 @@ int main()
     return 0;
 }
 
+/*
+ * Function : nbParts 
+ *      nbChildren : number of children
+ *      isMarried : true or false
+ */
 double nbParts(int nbChildren, bool isMarried)
 {
     double nbparts = 0;
@@ -116,6 +122,11 @@ double nbParts(int nbChildren, bool isMarried)
     return nbparts;
 }
 
+/*
+ * Function : taxes
+ *      revenuNetGlobal : net overall income
+ *      nbParts : number of Parts
+ */
 double taxes(double revenuNetGlobal,double nbParts)
 {
     double revenuNetImposable = revenuNetGlobal * 0.9;
