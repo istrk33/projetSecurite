@@ -209,7 +209,7 @@ void open_dialog_and_load_images(GtkWidget *btn, gpointer window)
                 while ((entry = readdir(folder)))
                 {
                         char *dot = strrchr(entry->d_name, '.'); /* Find last '.', if there is one */
-                        if (dot &&  ( (strcmp(dot, ".jpg") == 0) || (strcmp(dot, ".png") == 0) || (strcmp(dot, ".bmp") == 0))
+                        if (dot &&  ( (strcmp(dot, ".jpg") == 0) || (strcmp(dot, ".png") == 0) || (strcmp(dot, ".bmp") == 0)))
                         {
                                 strcpy(filename[i], entry->d_name);
                                 i++;
