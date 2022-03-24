@@ -4,6 +4,7 @@
  * @authors     Dorian Maidon <dorian.maidon@etudiant.univ-lr.fr>, Ilker Soyturk <ilker.soyturk@etudiant.univ-lr.fr>
  * @date        2021-2022
  */
+
 #include <gtk/gtk.h>
 #include <dirent.h>
 #include <gdk/gdkkeysyms.h>

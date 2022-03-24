@@ -1,3 +1,10 @@
+/**
+ * @file        MonPG5.c
+ *
+ * @authors     Dorian Maidon <dorian.maidon@etudiant.univ-lr.fr>, Ilker Soyturk <ilker.soyturk@etudiant.univ-lr.fr>
+ * @date        2021-2022
+ */
+
 #include <stdio.h>
 #include <ctype.h>
 #include <stdbool.h>

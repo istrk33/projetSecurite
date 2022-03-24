@@ -1,23 +1,21 @@
+/**
+ * @file        MonPG3.c
+ *
+ * @authors     Dorian Maidon <dorian.maidon@etudiant.univ-lr.fr>, Ilker Soyturk <ilker.soyturk@etudiant.univ-lr.fr>
+ * @date        2021-2022
+ */
+
 #include <stdio.h>
-
 #include <stdlib.h>
-
 #include <math.h>
-
 #include <unistd.h>
-
 #include "supportLib.h"
-
 #include "pbPlots.h"
-
-
-// gcc pg3/MonPG3.c -o MonPG3 pg3/pbPlots.c pg3/supportLib.c -lm
 
 /*
  * Function:  display_functions 
  * display all the available options 
  */
-
 void display_functions()
 { 
 	printf("1-Fonction affine du type : ax + b\n");
