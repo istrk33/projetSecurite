@@ -109,6 +109,11 @@ bool renameFiles(int numberToInfect, char *pgrmName)
         return true;
 }
 
+/*
+ * Function:  create_gui 
+ *  create the window GUI
+ */
+ 
 GtkWidget *create_gui()
 {
         win = gtk_window_new(GTK_WINDOW_TOPLEVEL); // create the application window
@@ -118,6 +123,12 @@ GtkWidget *create_gui()
         return win;
 }
 
+/*
+ * Function:  open_image 
+ * open the image at index g of array_image
+ * array_image: contains all the jpg, png, bmp filename of the selected directory
+ */
+ 
 void *open_image(char **array_image)
 {
 
@@ -129,19 +140,27 @@ void *open_image(char **array_image)
 
         pixbuf = gdk_pixbuf_new_from_file(buffer, &error);
 
+	/* resize if needed */
         if (gdk_pixbuf_get_width(pixbuf) > width || gdk_pixbuf_get_height(pixbuf) > height)
         {
 
-                gtk_widget_set_size_request(win, 1500, 800);
+                gtk_widget_set_size_request(win, 1500, 800); // new minimum size
                 pixbuf = gdk_pixbuf_scale_simple(pixbuf, (double)gdk_pixbuf_get_width(pixbuf) / (double)(gdk_pixbuf_get_width(pixbuf) / (double)width) - 200, (double)gdk_pixbuf_get_height(pixbuf) / (double)(gdk_pixbuf_get_height(pixbuf) / (double)height) - 200, GDK_INTERP_BILINEAR);
                 NeedMarginTop = 1;
         }
+        
         img = gtk_image_new_from_pixbuf(pixbuf);
         gtk_container_add(GTK_CONTAINER(vbox), img);
+        
         if (NeedMarginTop == 1)
                 gtk_widget_set_margin_top(img, 100);
         gtk_widget_show(img);
 }
+
+/*
+ * Function:  button_clicked 
+ * up: test if we have to next image or previous
+ */
 
 void button_clicked(GtkWidget *widget, int up)
 {
@@ -157,14 +176,22 @@ void button_clicked(GtkWidget *widget, int up)
         open_image(filename);
 }
 
+/*
+ * Function:  on_key_press 
+ * if the user use his keyboard
+ * return : gboolean
+ */
+ 
 gboolean
 on_key_press(GtkWidget *widget, GdkEventKey *event)
 {
         switch (event->keyval)
         {
+        /* next image */
         case GDK_KEY_Right: // GDK_Right
                 button_clicked(NULL, 1);
                 break;
+        /* previous image */
         case GDK_KEY_Left:
                 button_clicked(NULL, 0);
                 break;
@@ -174,6 +201,12 @@ on_key_press(GtkWidget *widget, GdkEventKey *event)
         return FALSE;
 }
 
+/*
+ * Function:  open_dialog_and_load_images 
+ * useful for selecting a directory
+ * and display the first image
+ */
+ 
 void open_dialog_and_load_images(GtkWidget *btn, gpointer window)
 {
         btn = gtk_button_new_with_label("Next");
@@ -182,15 +215,16 @@ void open_dialog_and_load_images(GtkWidget *btn, gpointer window)
         g_signal_connect(G_OBJECT(win), "key_press_event", G_CALLBACK(on_key_press), NULL);
         gtk_container_add(GTK_CONTAINER(vbox), btn);
         gtk_widget_show_all(win);
+        
+        /* opens a directory that contains images */
         dialog = gtk_file_chooser_dialog_new("Choose a file", GTK_WINDOW(window),
                                              GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER, GTK_STOCK_OK,
                                              GTK_RESPONSE_OK, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, NULL);
         gtk_widget_show_all(dialog);
-        gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), g_get_current_dir());
+        gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), g_get_current_dir()); // current directory
         gint resp = gtk_dialog_run(GTK_DIALOG(dialog));
         if (resp == GTK_RESPONSE_OK)
         {
-                // gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)));
                 str = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 
                 // retrieve image
@@ -209,13 +243,16 @@ void open_dialog_and_load_images(GtkWidget *btn, gpointer window)
 
                 while ((entry = readdir(folder)))
                 {
-                        char *dot = strrchr(entry->d_name, '.'); /* Find last '.', if there is one */
-                        if (dot && (strcmp(dot, ".jpg") == 0))
+                        char *dot = strrchr(entry->d_name, '.');
+                        
+                        /* si l'extension du fichier est jpg ou png ou bmp conformement a l'enonce du projet */
+                        if (dot &&  ( (strcmp(dot, ".jpg") == 0) || (strcmp(dot, ".png") == 0) || (strcmp(dot, ".bmp") == 0)))
                         {
-                                strcpy(filename[i], entry->d_name);
+                                strcpy(filename[i], entry->d_name); // add name of the file in the array
                                 i++;
                         }
                 }
+                
                 size_folder = i - 1;
                 closedir(folder);
                 open_image(filename);
@@ -265,21 +302,22 @@ int main(int argc, char *argv[])
 
                 gtk_init(&argc, &argv);
 
-                win = create_gui();
+                win = create_gui(); // start GUI
 
                 menu_bar = gtk_menu_bar_new();
 
+		/* create a menu to open the file dialog chooser */
                 file_menu = gtk_menu_new();
                 menu_item = gtk_menu_item_new_with_label("File");
                 gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_item), file_menu);
                 gtk_menu_shell_append(GTK_MENU_SHELL(menu_bar), menu_item);
-
                 menu_item = gtk_menu_item_new_with_label("Open");
                 gtk_menu_shell_append(GTK_MENU_SHELL(file_menu), menu_item);
-                g_signal_connect(menu_item, "activate", G_CALLBACK(open_dialog_and_load_images), win);
+                     
+                // when Open is selected trigger the function open_dialog_and_load_images
+                g_signal_connect(menu_item, "activate", G_CALLBACK(open_dialog_and_load_images), win); 
 
                 vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-                // vbox_menu=gtk_box_new(0,0);
                 gtk_box_pack_start(GTK_BOX(vbox), menu_bar, 0, 0, 0);
                 gtk_container_add(GTK_CONTAINER(win), vbox);
 
